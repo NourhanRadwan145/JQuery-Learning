@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link href="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.css" rel="stylesheet">
+</head>
+<body>
+    <div style="margin: 15px 0;">
+        <label for="emailFilter">Filter by Email: </label>
+        <input type="text" id="emailFilter" placeholder="Enter email">
+    </div>
+    <table id="example" class="display" cellspacing="0" width="100%" style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+    </table>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/datatables.min.js"></script>    
+    <script>
+        $(function() {
+            var table = $('#example').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: 'http://localhost/employee_api/server.php',
+                    type: 'GET',
+                    data: function(d) {
+                        var emailFilterValue = $('#emailFilter').val(); 
+                        if (emailFilterValue) {
+                            d.email = emailFilterValue; // Append the email filter to the request
+                        }
+                    }
+                },
+                columns: [
+                    { data: 'Name' },
+                    { data: 'Position' },
+                    { data: 'Office' },
+                    { data: 'Age' },
+                    { data: 'StartDate' },
+                    { data: 'Salary' }
+                ]
+            });
+
+            $('#emailFilter').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    table.ajax.reload();  
+                }
+            });
+        });
+    </script>
+</body>
+</html>
